@@ -37,6 +37,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 from dipy.align import resample
 from dipy.viz.regtools import overlay_slices
+import matplotlib.pyplot as plt
+import numpy as np
 
 ############################################
 #   Get External Mask from Diffusion Folder
@@ -228,15 +230,6 @@ def fix_affine_to_orthonormal(nifti_path):
     nib.save(nib.Nifti1Image(data, ortho_affine, img.header), out_path)
     return out_path
 
-############################################
-#   Updated Bias Field Correction Function
-############################################
-import matplotlib.pyplot as plt
-
-import matplotlib.pyplot as plt
-import os
-import numpy as np
-
 
 def bias_field_correction(diffusion_data, diffusion_nifti, b0_path, dwi_path,
                           output_b0_corrected, output_dwi_corrected, mask_path):
@@ -281,7 +274,7 @@ def bias_field_correction(diffusion_data, diffusion_nifti, b0_path, dwi_path,
     if mask_path is not None and os.path.exists(mask_path):
         fixed_mask_path = fix_affine_to_orthonormal(mask_path)
         ants_mask = ants.threshold_image(ants.image_read(fixed_mask_path), 0.5, 1.1, 1, 0)
-        print(f"✅ Loaded and thresholded mask from {mask_path}")
+        print(f" Loaded and thresholded mask from {mask_path}")
     
     # Apply ANTs' N4 bias field correction on the fixed b0 image.
     try:
@@ -407,12 +400,6 @@ def compute_bias_field_stats(original_b0, corrected_b0, mask, output_dir):
     plt.close()
     print(f" Saved overlaid bias field histogram to {hist_path}")
 
-
-
-
-############################################
-#   Modified Process Dataset Function (Three Branches)
-############################################
 
 def process_dataset(diffusion_path, T2_path, output_dir):
     logger = configure_logging(output_dir)
@@ -568,10 +555,10 @@ def batch_process(root_dir):
 
         # Skip already processed datasets
         if os.path.exists(fa_path) or os.path.exists(log_path):
-            print(f"✅ Skipping already processed dataset: {os.path.basename(dataset_dir)}")
+            print(f" Skipping already processed dataset: {os.path.basename(dataset_dir)}")
             continue
 
-        print(f"🚀 Processing: {os.path.basename(dataset_dir)}")
+        print(f" Processing: {os.path.basename(dataset_dir)}")
         process_dataset(diffusion_path, T2_path, output_dir)
 
 
