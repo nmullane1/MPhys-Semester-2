@@ -3,6 +3,8 @@
 """
 Pipeline to take the MD and FA maps, downsample (resample) the label file into diffusion space,
 then extract ROI statistics, save overlays, JSON stats, and maintain a master CSV of ROI values.
+
+Nicola Mullane
 """
 
 import os
@@ -230,7 +232,6 @@ def batch_process(fa_md_dir, label_dir, t2_dir, output_base_dir):
         subj  = os.path.basename(ds)
         subid = subj.split('_')[2]
 
-        # --- skip if already processed ---
         if subid in summary_df['Subject'].values:
             print(f"  {subj} already processed; skipping.")
             continue
@@ -252,7 +253,6 @@ def batch_process(fa_md_dir, label_dir, t2_dir, output_base_dir):
             print(f"Skipping {subj}: missing {missing}")
             continue
 
-        #  returns the stats dict
         stats = process_dataset(
             warp_md, warp_fa, eddy, label, t2_path,
             os.path.join(output_base_dir, subj)
